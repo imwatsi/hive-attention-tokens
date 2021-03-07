@@ -1,0 +1,1 @@
+"""Consensus on the state of peer nodes."""
