@@ -28,14 +28,16 @@ async def get_block(context, block_num):
     block =_block[0] if _block else None
     if not block: return {}
     _transactions = db.db.select(
-        f"""SELECT index, data, signature, account
+        f"""SELECT hash, index, data, signature, account
             FROM transactions
             WHERE block_num = {block_num}
             ;"""
     ) or []
     transactions = []
     for i in range(len(_transactions)):
-        transactions.append(transform_transaction(_transactions[i][1]))
+        transactions.append(
+            transform_transaction(_transactions[i][0], _transactions[i][2])
+        )
     
     _virtual_transactions = db.db.select(
         f"""SELECT index, data
@@ -45,14 +47,18 @@ async def get_block(context, block_num):
     ) or []
     virtual_transactions = []
     for i in range(len(_virtual_transactions)):
-        virtual_transactions.append(transform_transaction(_virtual_transactions[i][1]))
+        virtual_transactions.append(
+            transform_transaction(_virtual_transactions[i][0], _virtual_transactions[i][2])
+        )
 
     result = {
         'block': normalize_types({
             'block_num': block_num,
             'block_hash': block[0],
             'timestamp': block[1],
-            'previous_hash': block[2]
+            'previous_hash': block[2],
+            'transactions_no': len(transactions),
+            'virtual_transactions_no': len(virtual_transactions)
         }),
         'transactions': normalize_types(
             transactions

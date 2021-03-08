@@ -1,8 +1,9 @@
-def transform_transaction(raw_transaction):
+def transform_transaction(t_hash, raw_transaction):
     parsed = raw_transaction.split(',')
     if parsed[0] == 'air':
         return {
             'type': 'airdrop',
+            'transaction_id': t_hash,
             'to_account': parsed[1],
             'token': parsed[2],
             'amount': parsed[3]
@@ -10,6 +11,7 @@ def transform_transaction(raw_transaction):
     elif parsed[0] == 'trn':
         return {
             'type': 'transfer',
+            'transaction_id': t_hash,
             'from_account': parsed[1],
             'to_account': parsed[2],
             'token': parsed[3],
