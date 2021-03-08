@@ -35,8 +35,12 @@ def run_server(config):
     async def handler(request):
         request = await request.text()
         response = await dispatch(request, methods=all_methods, debug=True, context=app)
-        if response.wanted:
-            return web.json_response(response.deserialized(), status=response.http_status)
+        if response is not None and response.wanted:
+            headers = {
+                'Access-Control-Allow-Origin': '*'
+            }
+            ret = web.json_response(response.deserialized(), status=200, headers=headers)
+            return ret
         else:
             return web.Response()
 
