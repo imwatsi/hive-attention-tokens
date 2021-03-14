@@ -1,20 +1,27 @@
 import json
 import os
 
+HOME_DIR = os.environ.get('HAT_HOME') or "/etc/hive-attention-tokens"
+print(f"HOME_DIR={HOME_DIR}")
+
 CONFIG_FIELDS = [
-    'witness_name', 'posting_key', 'active_key', 'public_active_key',
-    'ssl_cert', 'ssl_key', 'server_port', 'db_username',
-    'db_password', 'server_host'
+    'witness_name', 'signing_key', 'public_signing_key',
+    'ssl_cert', 'ssl_key', 'server_port', 'server_host',
+    'db_username', 'db_password'
 ]
-CONFIG_FILE = f"{os.environ.get('HAT_CONFIG')}"
+
 
 class Config:
     # TODO: split witness_config from server_config
+    config = {}
+
     @classmethod
-    def load_config(self):
+    def load_config(cls, config_file):
         values = {}
-        if not os.path.exists(CONFIG_FILE):
-            new_conf = open(CONFIG_FILE, 'w')
+        if not os.path.isdir(HOME_DIR):
+            os.mkdir(HOME_DIR)
+        if not os.path.exists(config_file):
+            new_conf = open(config_file, 'w')
             new_conf.writelines(f"{field}=\n" for field in CONFIG_FIELDS)
             new_conf.close()
             print(
@@ -22,7 +29,7 @@ class Config:
                 'Populate it with the correct details and restart hive-attention-tokens.'
             )
             os._exit(1)
-        f = open(CONFIG_FILE, 'r').readlines()
+        f = open(config_file, 'r').readlines()
         for line in f:
             if '=' in line:
                 setting = line.split('=')
@@ -33,4 +40,6 @@ class Config:
                     values[_key] = json.loads(_value)
                 else:
                     values[_key] = _value
-        return values
+        cls.config = values
+
+Config.load_config(HOME_DIR + "/config.ini")
