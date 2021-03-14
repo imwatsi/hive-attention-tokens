@@ -15,7 +15,7 @@ from hive_attention_tokens.utils.tools import UTC_TIMESTAMP_FORMAT, BLANK_HASH, 
 
 BLOCK_KEYS_IGNORE = ["_transactions"]
 chain_id = "0xhat0testnet" # TODO: import from utils
-config = Config.load_config()
+config = Config.config
 db = DbAccess.db
 
 class Block:
@@ -179,7 +179,7 @@ class Blockchain:
             config['witness_name']
         )
         block_hash = genesis_block.compute_hash()
-        signature = genesis_block.sign_block(config['active_key'], config['public_active_key'])
+        signature = genesis_block.sign_block(config['signing_key'], config['public_signing_key'])
         cls.add_block_to_chain(genesis_block, config['witness_name'], signature)
 
 class BlockchainState:
