@@ -46,7 +46,8 @@ class DbSchema:
             CREATE TABLE IF NOT EXISTS virtual_transactions (
                 block_num integer NOT NULL REFERENCES blocks (index),
                 index integer NOT NULL,
-                data varchar NOT NULL
+                data varchar NOT NULL,
+                account varchar(16) NOT NULL REFERENCES hive_accounts (name)
             );"""
         self.tables['virtual_transactions'] = virtual_transactions
 
