@@ -15,7 +15,7 @@ from hive_attention_tokens.utils.tools import UTC_TIMESTAMP_FORMAT
 # - add to blockchain
 # - broadcast
 
-config = Config.load_config()
+config = Config.config
 
 class BlockSchedule:
 
@@ -32,7 +32,6 @@ class BlockSchedule:
             if due:
                 trans = []
                 trans_index = 0
-                print(len(TransactionMemPool.transactions))
                 while TransactionMemPool.transactions:
                     # TODO: process()
                     t = TransactionMemPool.transactions.pop()
@@ -40,7 +39,6 @@ class BlockSchedule:
                     trans.append(t)
                     trans_index += 1
                     if trans_index == 50: break # temp block size cap
-                print(len(TransactionMemPool.transactions))
                 _timestamp = cls.get_current_timestamp()
                 new_block = Block(
                     BlockchainState.head_block_num + 1,
@@ -50,7 +48,7 @@ class BlockSchedule:
                     config['witness_name']
                 )
                 del trans
-                signature = new_block.sign_block(config['active_key'], config['public_active_key'])
+                signature = new_block.sign_block(config['signing_key'], config['public_signing_key'])
                 Blockchain.add_block_to_chain(new_block, config['witness_name'], signature)
                 cls.last_timestamp = _timestamp
             time.sleep(0.1)
