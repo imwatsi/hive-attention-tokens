@@ -13,7 +13,8 @@ def build_methods():
     methods.add(**{'chain_api.' + method.__name__: method for method in (
         chain.get_info,
         chain.submit_transaction,
-        chain.get_block
+        chain.get_block,
+        chain.get_transaction
     )})
 
     methods.add(**{'accounts_api.' + method.__name__: method for method in (

@@ -5,6 +5,7 @@ from hive_attention_tokens.chain.transactions.core import BaseTransaction
 from hive_attention_tokens.chain.base.witness import TransactionMemPool
 from hive_attention_tokens.server.normalize import populate_by_schema, normalize_types
 from hive_attention_tokens.server.bridge.transformations import transform_transaction
+from hive_attention_tokens.utils.tools import validate_sha256_hash
 
 
 async def get_info(context):
@@ -69,3 +70,22 @@ async def get_block(context, block_num):
         )
     }
     return  result
+
+async def get_transaction(context, transaction_id):
+    if not validate_sha256_hash(transaction_id): raise Exception("Invalid transaction_id")
+    db = context['db']
+    _trans = db.db.select(
+        f"""SELECT hash, index, block_num, data, signature, account
+            FROM transactions
+            WHERE hash = '{transaction_id}'
+            ;"""
+    )
+    if _trans:
+        result = transform_transaction(_trans[0][0],_trans[0][3])
+        result['index'] = _trans[0][1]
+        result['block_num'] = _trans[0][2]
+        result['signature'] = _trans[0][4]
+        result['account'] = _trans[0][5]
+    else:
+        result = {}
+    return result
