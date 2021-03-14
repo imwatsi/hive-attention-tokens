@@ -26,12 +26,10 @@ async def get_account_history(context, account):
         for tr in _trans:
             full_tr = transform_transaction(tr[1], tr[2])
             full_tr['timestamp'] = tr[0]
-            transactions.append(full_tr)
+            transactions.append(normalize_types(full_tr))
 
     result = {
         'account': account,
-        'transactions': normalize_types(
-            transactions
-        )
+        'transactions': transactions
     }
     return result
