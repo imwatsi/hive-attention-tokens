@@ -1,16 +1,18 @@
+import os
+
+from hive_attention_tokens.config import Config
 from hive_attention_tokens.chain.base.blockchain import Blockchain, BlockchainState
 from hive_attention_tokens.chain.base.witness import BlockSchedule
 from hive_attention_tokens.chain.base.auth import HiveAccounts
 from hive_attention_tokens.chain.database.setup import DbSetup
 from hive_attention_tokens.chain.database.handlers import AttentionTokensDb
 from hive_attention_tokens.chain.database.access import DbAccess
-from hive_attention_tokens.config import Config
 from hive_attention_tokens.server.serve import run_server
 
 from threading import Thread
 
 def run():
-    config = Config.load_config()
+    config = Config.config
     HiveAccounts.init(BlockchainState)
     db_head_block = Blockchain.has_db_blocks()
     # TODO: load all accounts
