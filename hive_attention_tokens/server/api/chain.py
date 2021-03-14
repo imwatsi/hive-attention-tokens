@@ -18,6 +18,7 @@ async def submit_transaction(context, auth, account, transaction, signature, ref
     return "Transaction received and authenticated"
 
 async def get_block(context, block_num):
+    assert isinstance(block_num, int), "block_num must be an integer"
     db = context['db']
     _block = db.db.select(
         f"""SELECT hash, timestamp, previous_hash
