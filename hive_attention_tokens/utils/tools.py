@@ -27,3 +27,10 @@ def get_hash_sha256(data):
 
 def timestamp_to_string(timestamp):
     return datetime.strftime(timestamp, UTC_TIMESTAMP_FORMAT)
+
+def validate_sha256_hash(data):
+    valid_chars = ['a', 'b', 'c', 'd', 'e', 'f', '0', '1', '2' , '3', '4', '5', '6', '7', '8', '9']
+    if not isinstance(data, str): return False
+    for x in data.lower():
+        if x not in valid_chars: return False
+    return True
