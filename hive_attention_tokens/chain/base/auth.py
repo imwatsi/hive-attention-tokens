@@ -10,7 +10,6 @@ from hive_attention_tokens.ibc.hive.hive_api import HiveApi
 from hive_attention_tokens.chain.database.access import DbAccess
 
 
-config = Config.load_config()
 chain_id = "0xhat0testnet" # TODO: import from utils
 db = DbAccess.db
 
@@ -33,9 +32,10 @@ class HiveAccounts:
                 'active': db_acc['active'],
                 'owner': db_acc['owner']
             }
-        keys = HiveApi.get_accounts_keys([acc_name])
-        if keys:
-            cls.accounts[acc_name] = keys[acc_name]
+        else:
+            keys = HiveApi.get_accounts_keys([acc_name])
+            if keys:
+                cls.accounts[acc_name] = keys[acc_name]
     
     @classmethod
     def get_account_key(cls, acc_name, key_type):
