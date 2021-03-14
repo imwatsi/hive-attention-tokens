@@ -1,11 +1,16 @@
+import json
+import os
 
 from hive_attention_tokens.ibc.hive.hive_api import HiveApi
 from hive_attention_tokens.chain.database.access import DbAccess
 from hive_attention_tokens.utils.tools import NATIVE_TOKEN_ID
+
 db = DbAccess.db
 
 def get_genesis_accounts():
-    pass # TODO
+    # TODO: use on-chain method
+    HOME_DIR = os.environ.get('HAT_HOME') or "/etc/hive-attention-tokens"
+    return json.loads(open(f"{HOME_DIR}/genesis_accs.txt").read().strip())
 
 def create_genesis_accounts(gen_accs):
     # TODO: retrieve pub keys and add to accounts table
