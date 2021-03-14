@@ -16,7 +16,7 @@ deploy:
     - cd $DEPLOY_DIR
     - pwd
     - sudo pip3 install .
-    - pkill -f hive_attention_tokens || true
+    - sudo pkill -f hive_attention_tokens || true
     - sudo hive_attention_tokens
   only:
     - dev
