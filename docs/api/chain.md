@@ -70,3 +70,41 @@ Returns contents of a specified block
     "id": 1
 }
 ```
+
+---
+
+## chain.get_transaction
+
+Returns details about a specified transaction
+
+**Sample request:**
+
+```
+{
+    "jsonrpc": "2.0",
+    "method": "chain_api.get_transaction",
+    "params": {"transaction_id": "28c2df7413b4aee3325629e639ad298c1213c3c713c638955fd112d3aae08497"},
+    "id": 1
+}
+```
+
+**Expected response:**
+
+```
+{
+    "jsonrpc": "2.0",
+    "result": {
+        "type": "transfer",
+        "transaction_id": "28c2df7413b4aee3325629e639ad298c1213c3c713c638955fd112d3aae08497",
+        "from_account": "imwatsi.test",
+        "to_account": "hive-133333",
+        "token": "AA0000000000",
+        "amount": "0.006",
+        "index": 0,
+        "block_num": 177,
+        "signature": "AT5pDOUDPcdebmWfyUBRM7QcU4Xq+0KPEn5k/7x6NnWRC38qzGugd1E+yHzCTqGfTPX27Dw4PVr7evFf6lboYA==",
+        "account": "imwatsi.test"
+    },
+    "id": 1
+}
+```
