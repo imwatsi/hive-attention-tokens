@@ -15,10 +15,11 @@ deploy:
     - cp -r * $DEPLOY_DIR
     - cd $DEPLOY_DIR
     - pwd
-    - sudo pip3 install .
-    - sudo pkill -f hive_attention_tokens || true
-    - sudo mkdir -p /var/log/hive-attention-tokens/
-    - sudo nohup hive_attention_tokens >> /var/log/hive-attention-tokens/hat.log 2>&1&
+    - sudo su
+    - whoami
+    - pip3 install .
+    - pkill -f hive_attention_tokens || true
+    - nohup hive_attention_tokens >> /var/log/hive-attention-tokens/hat.log 2>&1&
   only:
     - dev
   tags:
