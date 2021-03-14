@@ -6,7 +6,7 @@ from jsonrpcserver.methods import Methods
 from hive_attention_tokens.chain.database.handlers import AttentionTokensDb
 from hive_attention_tokens.chain.base.blockchain import BlockchainState
 from hive_attention_tokens.server.normalize import normalize_types
-from hive_attention_tokens.server.api import chain
+from hive_attention_tokens.server.api import chain, accounts
 
 def build_methods():
     methods = Methods()
@@ -14,6 +14,10 @@ def build_methods():
         chain.get_info,
         chain.submit_transaction,
         chain.get_block
+    )})
+
+    methods.add(**{'accounts_api.' + method.__name__: method for method in (
+        accounts.get_account_history,
     )})
 
     return methods
