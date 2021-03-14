@@ -11,6 +11,7 @@ class DbSession:
         self.conn = psycopg2.connect(f"dbname=hive_attention_tokens user={config['db_username']} password={config['db_password']}")
         self.conn.autocommit = False
         self.cur = self.conn.cursor()
+        DbSetup.check_db(config)
         self._schema = DbSchema()
         self.live_schema = {}
         self.get_schema()
