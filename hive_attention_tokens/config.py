@@ -2,7 +2,6 @@ import json
 import os
 
 HOME_DIR = os.environ.get('HAT_HOME') or "/etc/hive-attention-tokens"
-print(f"HOME_DIR={HOME_DIR}")
 
 CONFIG_FIELDS = [
     'witness_name', 'signing_key', 'public_signing_key',

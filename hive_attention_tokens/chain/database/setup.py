@@ -5,6 +5,7 @@ import psycopg2
 from hive_attention_tokens.chain.database.schema import DbSchema, DB_VERSION
 
 
+
 class DbSession:
     def __init__(self, config):
         # TODO: retrieve from env_variables
@@ -45,7 +46,6 @@ class DbSession:
             self.cur.execute(f"SELECT * FROM {table} LIMIT 0")
             colnames = [desc[0] for desc in self.cur.description]
             self.live_schema[table] = colnames
-
 
 class DbSetup:
 
