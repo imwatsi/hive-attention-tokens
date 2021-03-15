@@ -103,7 +103,8 @@ Returns details about a specified transaction
         "index": 0,
         "block_num": 177,
         "signature": "AT5pDOUDPcdebmWfyUBRM7QcU4Xq+0KPEn5k/7x6NnWRC38qzGugd1E+yHzCTqGfTPX27Dw4PVr7evFf6lboYA==",
-        "account": "imwatsi.test"
+        "account": "imwatsi.test",
+        "raw_transaction": ""
     },
     "id": 1
 }
