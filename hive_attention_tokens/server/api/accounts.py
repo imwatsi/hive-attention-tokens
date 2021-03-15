@@ -4,6 +4,7 @@ from hive_attention_tokens.server.normalize import populate_by_schema, normalize
 from hive_attention_tokens.server.bridge.transformations import transform_transaction
 
 def verify_account_name(acc):
+    assert isinstance(acc,str), "Hive account name must be a string"
     assert len(acc) <= 16, "invalid Hive account name provided"
     # TODO: invalid characters
 
