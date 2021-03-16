@@ -8,6 +8,29 @@ def verify_account_name(acc):
     assert len(acc) <= 16, "invalid Hive account name provided"
     # TODO: invalid characters
 
+async def get_account(context, account):
+    verify_account_name(account)
+    # TODO
+    return {
+        'account': account,
+        'token_balances': {
+            'hat': {
+                'liquid': 100.000,
+                'staked': 300.000,
+                'savings': 100.000
+            }
+        },
+        'properties': {
+            'created': '2021-03-15T14:24:22',
+            'authorities': {
+                'owner': 'STM00000000000000000000000000000000000000000000000000',
+                'active': 'STM00000000000000000000000000000000000000000000000000',
+                'posting': 'STM00000000000000000000000000000000000000000000000000',
+                'memo': 'STM00000000000000000000000000000000000000000000000000'
+            }
+        }
+    }
+
 async def get_account_history(context, account):
     verify_account_name(account)
     db = context['db']

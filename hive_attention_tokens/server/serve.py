@@ -18,7 +18,8 @@ def build_methods():
     )})
 
     methods.add(**{'accounts_api.' + method.__name__: method for method in (
-        accounts.get_account_history,
+        accounts.get_account,
+        accounts.get_account_history
     )})
 
     return methods
