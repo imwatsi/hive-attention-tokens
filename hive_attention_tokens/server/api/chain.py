@@ -9,7 +9,14 @@ from hive_attention_tokens.utils.tools import validate_sha256_hash
 
 
 async def get_info(context):
-    return BlockchainState.get_chain_state()
+    info = BlockchainState.get_chain_state() or {}
+    info['hat_supply'] = {
+        'total': 1000000,
+        'liquid': 122000,
+        'staked': 868000,
+        'savings': 10000
+    }
+    return info
 
 async def submit_transaction(context, auth, account, transaction, signature, ref_block_id, ref_block_num):
     # TODO: validate at transaction object init level
