@@ -13,13 +13,26 @@ async def get_account(context, account):
     # TODO
     return {
         'account': account,
-        'token_balances': {
-            'hat': {
+        'token_balances': [
+            {
+                'token': 'AA0000000000',
                 'liquid': 100.000,
                 'staked': 300.000,
                 'savings': 100.000
+            },
+            {
+                'token': 'ZZ9990000000',
+                'liquid': 22.000,
+                'staked': 455.000,
+                'savings': 66.000
+            },
+            {
+                'token': 'DD1234567812',
+                'liquid': 1000.000,
+                'staked': 30000.000,
+                'savings': 10022.000
             }
-        },
+        ],
         'properties': {
             'created': '2021-03-15T14:24:22',
             'authorities': {
