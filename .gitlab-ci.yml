@@ -19,6 +19,6 @@ deploy:
     - sudo pkill -f hive_attention_tokens || true
     - sudo nohup hive_attention_tokens >> /home/ubuntu/hat.log 2>&1&
   only:
-    - dev
+    - master
   tags:
     - testnet
