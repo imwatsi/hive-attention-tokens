@@ -21,4 +21,4 @@ deploy:
   only:
     - dev
   tags:
-    - testnet
+    - testnet-dev
