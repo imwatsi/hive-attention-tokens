@@ -2,7 +2,7 @@
 
 from hive_attention_tokens.server.normalize import populate_by_schema, normalize_types
 from hive_attention_tokens.server.bridge.transformations import transform_transaction
-
+from hive_attention_tokens.utils.tools import NATIVE_TOKEN_ID
 def verify_account_name(acc):
     assert isinstance(acc,str), "Hive account name must be a string"
     assert len(acc) <= 16, "invalid Hive account name provided"
@@ -15,22 +15,22 @@ async def get_account(context, account):
         'account': account,
         'token_balances': [
             {
-                'token': 'AA0000000000',
-                'liquid': 100.000,
-                'staked': 300.000,
-                'savings': 100.000
+                'token': NATIVE_TOKEN_ID,
+                'liquid': "100.000",
+                'staked': "300.000",
+                'savings': "100.000"
             },
             {
                 'token': 'ZZ9990000000',
-                'liquid': 22.000,
-                'staked': 455.000,
-                'savings': 66.000
+                'liquid': "22.000",
+                'staked': "455.000",
+                'savings': "66.000"
             },
             {
                 'token': 'DD1234567812',
-                'liquid': 1000.000,
-                'staked': 30000.000,
-                'savings': 10022.000
+                'liquid': "1000.000",
+                'staked': "30000.000",
+                'savings': "10022.000"
             }
         ],
         'properties': {
