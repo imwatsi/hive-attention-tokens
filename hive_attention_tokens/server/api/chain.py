@@ -11,10 +11,10 @@ from hive_attention_tokens.utils.tools import validate_sha256_hash
 async def get_info(context):
     info = BlockchainState.get_chain_state() or {}
     info['hat_supply'] = {
-        'total': 1000000,
-        'liquid': 122000,
-        'staked': 868000,
-        'savings': 10000
+        'total': "1000000.000",
+        'liquid': "122000.000",
+        'staked': "868000.000",
+        'savings': "10000.000"
     }
     return info
 
