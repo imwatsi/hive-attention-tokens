@@ -1,3 +1,4 @@
+from decimal import Decimal
 from hive_attention_tokens.chain.transactions.validators.definitions import AIRDROP, TRANSFER
 
 TRANS_TYPES = {
@@ -39,8 +40,8 @@ def validate_transaction_structure(payload):
             pload_value = payload[i]
             if pload_value > def_max:
                 raise Exception (f"Payload value ({i}); ({payload[i]}) exceeds max ({def_max})")
-        elif expected_type is float:
-            payload[i] = float(payload[i])
+        elif expected_type is Decimal:
+            payload[i] = Decimal(payload[i])
             def_max = definition[i][1]
             def_max_dec = definition[i][2]
             pload_value = payload[i]
