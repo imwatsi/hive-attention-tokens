@@ -5,6 +5,21 @@ from datetime import datetime
 BLANK_HASH = "0000000000000000000000000000000000000000000000000000000000000000"
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 NATIVE_TOKEN_ID = "AA0000000000"
+SYSTEM_ACCOUNT = "@@sys"
+
+def parse_transaction_payload(payload):
+    elements = []
+    buffer = ""
+    in_line = False
+    for ch in payload:
+        if ch == '"': in_line = not in_line
+        if ch == "," and not in_line:
+            elements.append(buffer)
+            buffer = ""
+            continue
+        buffer += ch
+    elements.append(buffer)
+    return elements
 
 def validate_data_rules(data, rules, description):
     for k in rules:

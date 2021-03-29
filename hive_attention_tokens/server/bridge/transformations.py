@@ -1,5 +1,7 @@
+from hive_attention_tokens.utils.tools import parse_transaction_payload
+
 def transform_transaction(t_hash, raw_transaction):
-    parsed = raw_transaction.split(',')
+    parsed = parse_transaction_payload(raw_transaction)
     if parsed[0] == 'air':
         return {
             'type': 'airdrop',

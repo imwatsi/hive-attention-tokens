@@ -4,7 +4,7 @@ from hashlib import sha256
 from hive_attention_tokens.chain.base.auth import TransactionAuth, HiveAccounts
 from hive_attention_tokens.chain.transactions.db_plug import DbTransactions
 from hive_attention_tokens.chain.transactions.operations import OPERATION_DATA_RULES
-from hive_attention_tokens.utils.tools import validate_data_rules
+from hive_attention_tokens.utils.tools import validate_data_rules, parse_transaction_payload
 from hive_attention_tokens.chain.transactions.validators.validate import TRANS_TYPES, validate_transaction_structure, validate_transaction_permissions
 from hive_attention_tokens.chain.transactions.effectors.evoke import EvokeTransaction
 
@@ -32,6 +32,7 @@ class BaseTransaction:
             else:
                 raise Exception("Unable to verify transaction authority.")
         self.validate_signature()
+        
     
     def evoke_effectors(self):
         self.get_packed_transaction()
@@ -65,7 +66,7 @@ class BaseTransaction:
     def _parse_raw_transaction(self):
         # TODO optimize
         raw = self.raw_transaction
-        parsed = raw.split(',')
+        parsed = parse_transaction_payload(raw)
         if len(parsed) < 1:
             raise Exception("Invalid transaction")
         return parsed
