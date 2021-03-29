@@ -49,6 +49,6 @@ def validate_transaction_structure(payload):
                     raise Exception (f"Payload value ({i}); ({payload[i]}) exceeds max ({def_max})")
             if def_max_dec:
                 dec_places = str(pload_value)[::-1].find('.')
-                if int(dec_places) > def_max_dec:
-                    raise Exception (f"Payload value ({i}); ({dec_places}) decimal places found, max is ({def_max_dec})")
+                if int(dec_places) != def_max_dec:
+                    raise Exception (f"Payload value ({i}); ({dec_places}) decimal places found, required is ({def_max_dec})")
     return payload
