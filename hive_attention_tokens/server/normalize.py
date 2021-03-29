@@ -12,7 +12,7 @@ def normalize_types(data):
     if isinstance(data, dict):
         for k in data:
             if isinstance(data[k], decimal.Decimal):
-                data[k] = float(data[k])
+                data[k] = str(data[k])
             elif isinstance(data[k], datetime):
                 data[k] = datetime.strftime(data[k], UTC_TIMESTAMP_FORMAT)
             elif isinstance(data[k], dict):
