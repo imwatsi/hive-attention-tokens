@@ -1,4 +1,6 @@
 from hive_attention_tokens.utils.tools import parse_transaction_payload
+from decimal import Decimal
+from hive_attention_tokens.utils.tools import NATIVE_TOKEN_ID
 
 def transform_transaction(t_hash, raw_transaction):
     parsed = parse_transaction_payload(raw_transaction)
@@ -20,3 +22,40 @@ def transform_transaction(t_hash, raw_transaction):
             'amount': parsed[4]
         }
     return None
+
+def transform_balances(liquid, staked, savings):
+    result = []
+    combined = {}
+    # TODO staked, savings
+    for x in [liquid, staked, savings]:
+        for t in x['token_map']:
+            combined[t] = {
+                'liquid': '0.000',
+                'staked': '0.000',
+                'savings': '0.000'
+            }
+        del x['token_map']
+
+
+    for token in liquid:
+        combined[token] = {'liquid': str(liquid[token])}
+
+    for token in staked:
+        combined[token]['staked'] = str(staked[token])
+
+    for token in savings:
+        combined[token]['savings'] = str(savings[token])
+    
+    for t in combined:
+        liq = str(combined[t]['liquid'])
+        stak = str(combined[t]['staked'])
+        sav = str(combined[t]['savings'])
+        result.append(
+            {
+                'token': t,
+                'liquid': liq,
+                'staked': stak,
+                'savings': sav
+            }
+        )
+    return result
