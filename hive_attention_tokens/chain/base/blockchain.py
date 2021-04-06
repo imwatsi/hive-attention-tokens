@@ -117,6 +117,7 @@ class Blockchain:
             #tra.save_transaction_to_db()
             tra.evoke_effectors()
         db._save() # TODO: temp, consider LIB as point of save
+        # TODO: save state
         # TODO: broadcast block
         BlockchainState.update_cur_block(block.index, block_hash, block.timestamp)
         cls.last_block = block
