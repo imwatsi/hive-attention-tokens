@@ -9,3 +9,6 @@ class EvokeTransaction:
         if transaction[0] == 'air':
             if transaction[2] == NATIVE_TOKEN_ID:
                 NativeTokenV1(block_num, trans_id, transaction).op.process()
+        elif transaction[0] == 'trn':
+            if transaction[3] == NATIVE_TOKEN_ID:
+                NativeTokenV1(block_num, trans_id, transaction).op.process()

@@ -42,7 +42,7 @@ def get_genesis_airdrop_transactions(gen_accs):
                     '@@sys',
                     None,
                     None,
-                    f"air,{acc},{NATIVE_TOKEN_ID},10.000",
+                    f"air,{acc},{NATIVE_TOKEN_ID},10000.000",
                     index=tra_index
                 )
                 trans.append(new_trans)
