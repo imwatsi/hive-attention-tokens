@@ -41,7 +41,7 @@ async def get_account_history(context, account):
         f"""SELECT b.timestamp, t.hash, t.data
                 FROM transactions t
                 LEFT JOIN blocks b ON t.block_num = b.index
-                WHERE t.account = '{account}'
+                WHERE t.account = '{account}' OR t.counter_account = '{account}'
                 ORDER BY b.index DESC
                 LIMIT 50
             ;"""

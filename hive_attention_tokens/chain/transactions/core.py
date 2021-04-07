@@ -6,6 +6,7 @@ from hive_attention_tokens.chain.transactions.db_plug import DbTransactions
 from hive_attention_tokens.chain.transactions.operations import OPERATION_DATA_RULES
 from hive_attention_tokens.utils.tools import validate_data_rules, parse_transaction_payload
 from hive_attention_tokens.chain.transactions.validators.validate import TRANS_TYPES, validate_transaction_structure, validate_transaction_permissions
+from hive_attention_tokens.chain.transactions.validators.definitions import get_counter_account
 from hive_attention_tokens.chain.transactions.effectors.evoke import EvokeTransaction
 
 TRANSACTION_KEYS_IGNORE = []
@@ -56,7 +57,8 @@ class BaseTransaction:
             'index': self.packed_transaction['index'],
             'data': self.packed_transaction['data'],
             'signature': self.packed_transaction['signature'],
-            'account': self.packed_transaction['account']
+            'account': self.packed_transaction['account'],
+            'counter_account': self.counter_account
         })
 
     def get_hash(self):
@@ -76,6 +78,7 @@ class BaseTransaction:
         self.parsed_transaction = validate_transaction_structure(trans)
         validate_transaction_permissions(self.account, self.parsed_transaction)
         self.transaction_type = self.parsed_transaction[0]
+        self.counter_account = get_counter_account(trans)
 
     def get_auth_level(self):
         if self.transaction_type == 'air':

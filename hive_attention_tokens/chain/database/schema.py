@@ -38,7 +38,8 @@ class DbSchema:
                 index integer NOT NULL,
                 data varchar NOT NULL,
                 signature char(88),
-                account varchar(16) NOT NULL REFERENCES hive_accounts (name)
+                account varchar(16) NOT NULL REFERENCES hive_accounts (name),
+                counter_account varchar(16) NOT NULL REFERENCES hive_accounts (name)
             );"""
         self.tables['transactions'] = transactions
 
