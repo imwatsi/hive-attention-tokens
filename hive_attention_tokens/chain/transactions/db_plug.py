@@ -12,3 +12,7 @@ class DbTransactions:
     @classmethod
     def new_token_transfer(cls, data):
         db._insert('token_transfers', data)
+    
+    @classmethod
+    def new_token_genesis(cls, data):
+        db._insert('tokens', data)

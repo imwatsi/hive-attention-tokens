@@ -7,6 +7,17 @@ UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 NATIVE_TOKEN_ID = "AA0000000000"
 SYSTEM_ACCOUNT = "@@sys"
 
+class Json:
+    """Custom JSON object type"""
+    def __new__(self, payload):
+        self.json_object = json.loads(payload)
+        self.len = len(payload)
+        return self
+    
+    def __str__(self):
+        return json.dumps(self.json_object)
+
+
 def parse_transaction_payload(payload):
     elements = []
     buffer = ""

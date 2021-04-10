@@ -1,9 +1,11 @@
 from decimal import Decimal
-from hive_attention_tokens.chain.transactions.validators.definitions import AIRDROP, TRANSFER
+from hive_attention_tokens.chain.transactions.validators.definitions import AIRDROP, TRANSFER, TOKEN_GENESIS
+from hive_attention_tokens.utils.tools import Json
 
 TRANS_TYPES = {
     'air': AIRDROP,
-    'trn': TRANSFER
+    'trn': TRANSFER,
+    'gen': TOKEN_GENESIS
 }
 
 def validate_transaction_permissions(acc, payload):
@@ -52,4 +54,11 @@ def validate_transaction_structure(payload):
                 dec_places = str(pload_value)[::-1].find('.')
                 if int(dec_places) != def_max_dec:
                     raise Exception (f"Payload value ({i}); ({dec_places}) decimal places found, required is ({def_max_dec})")
+        elif expected_type is Json:
+            ob = Json(payload[i])
+            payload[i] = ob.json_object
+            def_max = definition[i][1]
+            if def_max:
+                if ob.len > def_max:
+                    raise Exception (f"Payload value ({i}); len ({pload_len}) exceeds max ({max_len})")
     return payload

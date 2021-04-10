@@ -38,8 +38,7 @@ class BaseTransaction:
     def evoke_effectors(self):
         self.get_packed_transaction()
         self.get_hash()
-        self.save_transaction_to_db()
-        EvokeTransaction.evoke(self.block_num, self.hash, self.parsed_transaction)
+        EvokeTransaction.evoke(self, self.account, self.block_num, self.hash, self.parsed_transaction)
     
     def get_packed_transaction(self):
         self.packed_transaction = {
@@ -81,7 +80,9 @@ class BaseTransaction:
         self.counter_account = get_counter_account(trans)
 
     def get_auth_level(self):
-        if self.transaction_type == 'air':
+        if self.transaction_type == 'gen':
+            self.auth_level = 'active'
+        elif self.transaction_type == 'air':
             self.auth_level = 'active'
         elif self.transaction_type == 'trn':
             self.auth_level = 'active'

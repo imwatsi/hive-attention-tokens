@@ -3,7 +3,7 @@ import os
 
 from hive_attention_tokens.ibc.hive.hive_api import HiveApi
 from hive_attention_tokens.chain.database.access import DbAccess
-from hive_attention_tokens.utils.tools import NATIVE_TOKEN_ID
+from hive_attention_tokens.utils.tools import NATIVE_TOKEN_ID, SYSTEM_ACCOUNT
 
 db = DbAccess.db
 
@@ -27,10 +27,10 @@ def get_genesis_airdrop_transactions(gen_accs):
     trans = []
     tra_index = 0
     new_trans = BaseTransaction(
-        '@@sys',
+        SYSTEM_ACCOUNT,
         None,
         None,
-        f"air,@@sys,{NATIVE_TOKEN_ID},1000000.000",
+        f"gen,{NATIVE_TOKEN_ID},{SYSTEM_ACCOUNT}," + '{"initial_supply": 1000000.000}',
         index=tra_index
     )
     trans.append(new_trans)
@@ -39,7 +39,7 @@ def get_genesis_airdrop_transactions(gen_accs):
             for acc in gen_accs:
                 tra_index += 1
                 new_trans = BaseTransaction(
-                    '@@sys',
+                    SYSTEM_ACCOUNT,
                     None,
                     None,
                     f"air,{acc},{NATIVE_TOKEN_ID},10000.000",

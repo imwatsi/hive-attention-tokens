@@ -9,6 +9,10 @@ from hive_attention_tokens.utils.tools import NATIVE_TOKEN_ID, SYSTEM_ACCOUNT
 class StateMachine:
 
     @classmethod
+    def token_genesis_action(cls,token_id, props):
+        GenesisAction(token_id, props)
+
+    @classmethod
     def airdrop_action(cls, token_id, to_acc, amount):
         AirdropAction(token_id, to_acc, amount)
 
@@ -25,14 +29,28 @@ class StateMachine:
         pass
 
 
+class GenesisAction:
+    def __init__(self, token_id, props):
+        self.token = token_id
+        self.props = props
+        self.verify()
+        self.process()
+    
+    def verify(self):
+        exists = Tokens.check_token_existence(self.token)
+        if exists: raise Exception(f"Token '{self.token}' already exists")
+    
+    def process(self):
+        Tokens.add_new_token(self.token, self.props)
+        TokenBalances.genesis(self.token, self.props['initial_supply'])
+
 class AirdropAction:
 
     def __init__(self, token_id, to_acc, amount):
         self.token = token_id
         self.to_acc = to_acc
         self.amount = amount
-        if to_acc != SYSTEM_ACCOUNT:
-            self.verify()
+        self.verify()
         self.process()
     
     def verify(self):
@@ -58,26 +76,53 @@ class TransferAction:
         TokenBalances.transfer_liquid(self.token, self.from_acc, self.to_acc, self.amount)
 
 
+class Tokens:
+    """Keeps track of token types and their props"""
+    tokens = {}
+
+    @classmethod
+    def add_new_token(cls, token, props):
+        cls.tokens[token] = props
+
+    @classmethod
+    def check_token_existence(cls, token):
+        # TODO: check in Tokens registry
+        if token in TokenBalances.liquid_balances or token in TokenBalances.savings_balances or token in TokenBalances.staked_balances:
+            return True
+        return False
+
 
 class TokenBalances:
     
-    liquid_balances = {
-        NATIVE_TOKEN_ID: {
-            '@@sys': Decimal("0.000")
-        }
-    }
+    liquid_balances = {}
+    liquid_totals = {}
 
-    savings_balances = {
-        NATIVE_TOKEN_ID: {
-            '@@sys': Decimal("0.000")
-        }
-    }
+    savings_balances = {}
+    savings_totals = {}
 
-    staked_balances = {
-        NATIVE_TOKEN_ID: {
-            '@@sys': Decimal("0.000")
-        }
-    }
+    staked_balances = {}
+    staked_totals = {}
+    
+    @classmethod
+    def get_liquid_total(cls, token):
+        if token in cls.liquid_totals:
+            return cls.liquid_totals[token]
+        else:
+            return Decimal("{:.3f}".format(0))
+
+    @classmethod
+    def get_savings_total(cls, token):
+        if token in cls.savings_totals:
+            return cls.savings_totals[token]
+        else:
+            return Decimal("{:.3f}".format(0))
+    
+    @classmethod
+    def get_staked_total(cls, token):
+        if token in cls.staked_totals:
+            return cls.staked_totals[token]
+        else:
+            return Decimal("{:.3f}".format(0))
 
     @classmethod
     def get_liquid_balance(cls, token, acc):
@@ -96,12 +141,28 @@ class TokenBalances:
             result[token] = cls.get_liquid_balance(token, acc)
         result['token_map'] = liquid_tokens
         return result
-    
+
+    @classmethod
+    def genesis(cls, token, amount):
+        cls.liquid_balances[token] = {
+            SYSTEM_ACCOUNT: Decimal("{:.3f}".format(amount))
+        }
+        cls.liquid_totals[token] = Decimal("{:.3f}".format(amount))
+
+        cls.savings_balances[token] = {
+            SYSTEM_ACCOUNT: Decimal("{:.3f}".format(0))
+        }
+        cls.savings_totals[token] = Decimal("{:.3f}".format(0))
+
+        cls.staked_balances[token] = {
+            SYSTEM_ACCOUNT: Decimal("{:.3f}".format(0))
+        }
+        cls.staked_totals[token] = Decimal("{:.3f}".format(0))
+
     @classmethod
     def airdrop_liquid(cls, token, to_acc, amount):
         cur_bal = cls.get_liquid_balance(token, to_acc)
-        if to_acc != SYSTEM_ACCOUNT: # bypass subtraction if init airdrop
-            cls.liquid_balances[token][SYSTEM_ACCOUNT] -= amount
+        cls.liquid_balances[token][SYSTEM_ACCOUNT] -= amount
         cls.liquid_balances[token][to_acc] = cur_bal + amount
     
     @classmethod
