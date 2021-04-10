@@ -180,7 +180,7 @@ class TokenBalances:
 
     @classmethod
     def airdrop_liquid(cls, token, to_acc, amount):
-        cur_bal = cls.get_liquid_balance(token, to_acc)
+        cur_bal = cls.get_balance('liquid', token, to_acc)
         cls.liquid_balances[token][SYSTEM_ACCOUNT] -= amount
         cls.liquid_balances[token][to_acc] = cur_bal + amount
     
