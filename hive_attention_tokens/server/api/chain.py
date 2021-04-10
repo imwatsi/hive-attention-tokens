@@ -3,20 +3,25 @@
 from hive_attention_tokens.chain.base.blockchain import BlockchainState
 from hive_attention_tokens.chain.transactions.core import BaseTransaction
 from hive_attention_tokens.chain.base.witness import TransactionMemPool
+from hive_attention_tokens.chain.base.state import TokenBalances
 from hive_attention_tokens.server.normalize import populate_by_schema, normalize_types
 from hive_attention_tokens.server.bridge.transformations import transform_transaction
-from hive_attention_tokens.utils.tools import validate_sha256_hash
+from hive_attention_tokens.utils.tools import validate_sha256_hash, NATIVE_TOKEN_ID
 
 
 async def get_info(context):
     info = BlockchainState.get_chain_state() or {}
+    liquid_hat = TokenBalances.get_liquid_total(NATIVE_TOKEN_ID)
+    savings_hat = TokenBalances.get_savings_total(NATIVE_TOKEN_ID)
+    staked_hat = TokenBalances.get_staked_total(NATIVE_TOKEN_ID)
+    total_hat = liquid_hat + savings_hat + staked_hat
     info['hat_supply'] = {
-        'total': "1000000.000",
-        'liquid': "122000.000",
-        'staked': "868000.000",
-        'savings': "10000.000"
+        'total': total_hat,
+        'liquid': liquid_hat,
+        'staked': staked_hat,
+        'savings': savings_hat
     }
-    return info
+    return normalize_types(info)
 
 async def submit_transaction(context, auth, account, transaction, signature, ref_block_id, ref_block_num):
     # TODO: validate at transaction object init level

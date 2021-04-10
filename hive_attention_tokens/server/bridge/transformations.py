@@ -1,10 +1,19 @@
 from hive_attention_tokens.utils.tools import parse_transaction_payload
 from decimal import Decimal
+import json
 from hive_attention_tokens.utils.tools import NATIVE_TOKEN_ID
 
 def transform_transaction(t_hash, raw_transaction):
     parsed = parse_transaction_payload(raw_transaction)
-    if parsed[0] == 'air':
+    if parsed[0] == 'gen':
+        return {
+            'type': 'genesis',
+            'transaction_id': t_hash,
+            'token': parsed[1],
+            'owner': parsed[2],
+            'prop': json.loads(parsed[3])
+        }
+    elif parsed[0] == 'air':
         return {
             'type': 'airdrop',
             'transaction_id': t_hash,
