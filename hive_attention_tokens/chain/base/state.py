@@ -103,6 +103,8 @@ class TokenBalances:
     staked_balances = {}
     staked_totals = {}
     
+    # TOTALS
+
     @classmethod
     def get_liquid_total(cls, token):
         if token in cls.liquid_totals:
@@ -124,23 +126,40 @@ class TokenBalances:
         else:
             return Decimal("{:.3f}".format(0))
 
+    # BALANCES
+
     @classmethod
-    def get_liquid_balance(cls, token, acc):
-        # TODO: verify account
-        if acc not in cls.liquid_balances[token]:
-            cls.liquid_balances[token][acc] = Decimal("0.000")
+    def get_balance(cls, form, token, acc):
+        if form == 'liquid':
+            ref = cls.liquid_balances
+        elif form == 'savings':
+            ref = cls.savings_balances
+        elif form == 'staked':
+            ref = cls.staked_balances
+        if acc not in ref[token]:
+            ref[token][acc] = Decimal("0.000")
             return Decimal("0.000")
-        return cls.liquid_balances[token][acc]
+        return ref[token][acc]
     
     @classmethod
-    def get_liquid_balances(cls, acc):
+    def get_balances(cls, acc):
         # TODO: verify account
-        result = {}
-        liquid_tokens = list(cls.liquid_balances.keys())
-        for token in liquid_tokens:
-            result[token] = cls.get_liquid_balance(token, acc)
-        result['token_map'] = liquid_tokens
-        return result
+        final = {}
+        for form in ['liquid', 'savings', 'staked']:
+            if form == 'liquid':
+                ref = cls.liquid_balances
+            elif form == 'savings':
+                ref = cls.savings_balances
+            elif form == 'staked':
+                ref = cls.staked_balances
+            result = {}
+            tokens = list(ref.keys())
+            for token in tokens:
+                result[token] = cls.get_balance(form, token, acc)
+            result['token_map'] = tokens
+            final[form] = dict(result)
+            del result
+        return final
 
     @classmethod
     def genesis(cls, token, amount):
