@@ -11,7 +11,7 @@ def transform_transaction(t_hash, raw_transaction):
             'transaction_id': t_hash,
             'token': parsed[1],
             'owner': parsed[2],
-            'prop': json.loads(parsed[3])
+            'prop': parsed[3]
         }
     elif parsed[0] == 'air':
         return {
