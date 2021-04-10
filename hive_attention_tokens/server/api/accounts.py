@@ -1,6 +1,7 @@
 """Account endpoints"""
 
 from hive_attention_tokens.chain.base.state import TokenBalances
+from hive_attention_tokens.chain.base.auth import HiveAccounts
 from hive_attention_tokens.server.normalize import populate_by_schema, normalize_types
 from hive_attention_tokens.server.bridge.transformations import transform_transaction, transform_balances
 from hive_attention_tokens.utils.tools import NATIVE_TOKEN_ID
@@ -13,24 +14,22 @@ def verify_account_name(acc):
 
 async def get_account(context, account):
     verify_account_name(account)
-    liquid_balances = TokenBalances.get_liquid_balances(account)
+    balances = TokenBalances.get_balances(account)
     token_bals = transform_balances(
-        liquid_balances,
-        {NATIVE_TOKEN_ID:Decimal("0.000"), 'token_map': [NATIVE_TOKEN_ID]},
-        {NATIVE_TOKEN_ID:Decimal("0.000"), 'token_map': [NATIVE_TOKEN_ID]}
+        balances['liquid'],
+        balances['staked'],
+        balances['savings']
     )
-    # TODO
+    authorities = {}
+    for kt in ['owner', 'active', 'posting', 'memo']:
+        authorities[kt] = HiveAccounts.get_account_key(account, kt)
+
     return {
         'account': account,
         'token_balances': token_bals,
         'properties': {
             'created': '2021-03-15T14:24:22',
-            'authorities': {
-                'owner': 'STM00000000000000000000000000000000000000000000000000',
-                'active': 'STM00000000000000000000000000000000000000000000000000',
-                'posting': 'STM00000000000000000000000000000000000000000000000000',
-                'memo': 'STM00000000000000000000000000000000000000000000000000'
-            }
+            'authorities': authorities
         }
     }
 
