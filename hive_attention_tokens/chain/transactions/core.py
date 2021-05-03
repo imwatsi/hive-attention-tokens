@@ -4,9 +4,10 @@ from hashlib import sha256
 from hive_attention_tokens.chain.base.auth import TransactionAuth, HiveAccounts
 from hive_attention_tokens.chain.transactions.db_plug import DbTransactions
 from hive_attention_tokens.chain.transactions.operations import OPERATION_DATA_RULES
-from hive_attention_tokens.utils.tools import validate_data_rules, parse_transaction_payload
-from hive_attention_tokens.chain.transactions.validators.validate import TRANS_TYPES, validate_transaction_structure, validate_transaction_permissions
-from hive_attention_tokens.chain.transactions.validators.definitions import get_counter_account
+from hive_attention_tokens.utils.tools import validate_data_rules, parse_transaction_payload, get_counter_account
+from hive_attention_tokens.chain.transactions.validators.validate import validate_transaction_permissions
+from hive_attention_tokens.chain.transactions.validators.ops.token_genesis import TokenGenesisOp
+from hive_attention_tokens.chain.transactions.validators.ops.airdrop import TokenAirdropOp
 from hive_attention_tokens.chain.transactions.effectors.evoke import EvokeTransaction
 
 TRANSACTION_KEYS_IGNORE = []
@@ -74,7 +75,10 @@ class BaseTransaction:
     
     def validate_transaction(self):
         trans = self._parse_raw_transaction()
-        self.parsed_transaction = validate_transaction_structure(trans)
+        if trans[0] == 'gen':
+            self.parsed_transaction = TokenGenesisOp(trans).get_parsed_transaction()
+        elif trans[0] == 'air':
+            self.parsed_transaction = TokenAirdropOp(trans).get_parsed_transaction()
         validate_transaction_permissions(self.account, self.parsed_transaction)
         self.transaction_type = self.parsed_transaction[0]
         self.counter_account = get_counter_account(trans)

@@ -30,7 +30,7 @@ def get_genesis_airdrop_transactions(gen_accs):
         SYSTEM_ACCOUNT,
         None,
         None,
-        f"gen,{NATIVE_TOKEN_ID},{SYSTEM_ACCOUNT}," + '{"initial_supply": 1000000.000}',
+        f"gen,{NATIVE_TOKEN_ID},{SYSTEM_ACCOUNT}," + '{"initial_supply": "1000000.000"}',
         index=tra_index
     )
     trans.append(new_trans)

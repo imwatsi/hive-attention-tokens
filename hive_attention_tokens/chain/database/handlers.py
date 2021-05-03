@@ -49,7 +49,7 @@ class AttentionTokensDb:
             sql += f" LIMIT {limit}"
         sql += ";"
         return self.db.select(sql)
-    
+
     def _select_one(self, table, col_filters):
         sql = f"SELECT 1 FROM {table}"
         if isinstance(col_filters, dict):

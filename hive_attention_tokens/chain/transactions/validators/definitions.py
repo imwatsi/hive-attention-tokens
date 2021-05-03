@@ -12,21 +12,6 @@ AIRDROP = [
 
 """ trans_type, from_account, to_account, token, amount """
 
-TRANSFER = [
-    [str, 3],
-    [str, 16],
-    [str, 16],
-    [str, 12],
-    [Decimal, None, 3]
-]
-
-""" trans_type, token_id, owner, props(json)"""
-TOKEN_GENESIS = [
-    [str, 3],
-    [str, 12],
-    [str, 16],
-    [Json, 2048]
-]
 
 def get_counter_account(trans):
     if trans[0] == 'gen':

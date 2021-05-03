@@ -3,6 +3,7 @@ from hive_attention_tokens.chain.base.state import StateMachine
 from hive_attention_tokens.utils.tools import get_hash_sha256
 from hive_attention_tokens.chain.transactions.db_plug import DbTransactions
 from hive_attention_tokens.utils.tools import NATIVE_TOKEN_ID, SYSTEM_ACCOUNT
+from hive_attention_tokens.utils.tools import normalize_json
 
 
 class NativeTokenV1:
@@ -25,13 +26,15 @@ class NativeTokenV1:
             self.transaction_id = transaction_id
             self.owner = owner
             self.props = props
+            self.action = None
             self.validate()
         
         def validate(self):
             if self.orig_acc != SYSTEM_ACCOUNT: raise Exception ("Token generation account and owner must the same.")
+            self.action = StateMachine.token_genesis_action(NATIVE_TOKEN_ID, self.props)
 
         def process(self):
-            StateMachine.token_genesis_action(NATIVE_TOKEN_ID, self.props)
+            self.action.process()
             # all checks passed, save to DB
             self.parent.save_transaction_to_db()
             DbTransactions.new_token_transfer({
@@ -45,7 +48,7 @@ class NativeTokenV1:
                 'id': NATIVE_TOKEN_ID,
                 'owner': self.owner,
                 'init_transaction_id': self.transaction_id,
-                'props': json.dumps(self.props)
+                'props': normalize_json(self.props)
             }
             DbTransactions.new_token_genesis(data)
 
@@ -57,14 +60,16 @@ class NativeTokenV1:
             self.transaction_id = transaction_id
             self.account = account
             self.amount = amount
+            self.action = None
             self.validate()
         
         def validate(self):
             if self.orig_acc != SYSTEM_ACCOUNT:  raise Exception("Only the system account can airdrop native tokens.")
+            self.action = StateMachine.airdrop_action(NATIVE_TOKEN_ID, self.account, self.amount)
         
         def process(self):
             # run past state machine / validate
-            StateMachine.airdrop_action(NATIVE_TOKEN_ID, self.account, self.amount)
+            self.action.process()
             # all checks passed, save to DB
             self.parent.save_transaction_to_db()
             data = {
@@ -84,16 +89,17 @@ class NativeTokenV1:
             self.from_acc = from_acc
             self.to_acc = to_acc
             self.amount = amount
+            self.action = None
             self.validate()
         
         def validate(self):
             if self.orig_acc != self.from_acc:
                 # TODO: check multisig, else exception
                 raise Exception(f"'{self.orig_acc}' is not allowed to transfer tokens from '{self.from_acc}'")
+            self.action = StateMachine.transfer_action(NATIVE_TOKEN_ID, self.from_acc, self.to_acc, self.amount)
 
         def process(self):
-            # run past state machine / validate
-            StateMachine.transfer_action(NATIVE_TOKEN_ID, self.from_acc, self.to_acc, self.amount)
+            self.action.process()
             # all checks passed, save to DB
             self.parent.save_transaction_to_db()
             data = {

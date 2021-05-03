@@ -1,12 +1,5 @@
 from decimal import Decimal
-from hive_attention_tokens.chain.transactions.validators.definitions import AIRDROP, TRANSFER, TOKEN_GENESIS
 from hive_attention_tokens.utils.tools import Json
-
-TRANS_TYPES = {
-    'air': AIRDROP,
-    'trn': TRANSFER,
-    'gen': TOKEN_GENESIS
-}
 
 def validate_transaction_permissions(acc, payload):
     trans_type = payload[0]

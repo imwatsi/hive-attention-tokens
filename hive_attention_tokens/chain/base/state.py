@@ -10,15 +10,15 @@ class StateMachine:
 
     @classmethod
     def token_genesis_action(cls,token_id, props):
-        GenesisAction(token_id, props)
+        return GenesisAction(token_id, props)
 
     @classmethod
     def airdrop_action(cls, token_id, to_acc, amount):
-        AirdropAction(token_id, to_acc, amount)
+        return AirdropAction(token_id, to_acc, amount)
 
     @classmethod
     def transfer_action(cls, token_id, from_acc, to_acc, amount):
-        TransferAction(token_id, from_acc, to_acc, amount)
+        return TransferAction(token_id, from_acc, to_acc, amount)
 
     @classmethod
     def savings_transfer_action(cls):
@@ -34,7 +34,6 @@ class GenesisAction:
         self.token = token_id
         self.props = props
         self.verify()
-        self.process()
     
     def verify(self):
         exists = Tokens.check_token_existence(self.token)
@@ -51,7 +50,6 @@ class AirdropAction:
         self.to_acc = to_acc
         self.amount = amount
         self.verify()
-        self.process()
     
     def verify(self):
         TokenBalances.verify_liquid_balance(self.token, SYSTEM_ACCOUNT, self.amount)
@@ -67,7 +65,6 @@ class TransferAction:
         self.to_acc = to_acc
         self.amount = amount
         self.verify()
-        self.process()
     
     def verify(self):
         TokenBalances.verify_liquid_balance(self.token, self.from_acc, self.amount)
@@ -164,19 +161,19 @@ class TokenBalances:
     @classmethod
     def genesis(cls, token, amount):
         cls.liquid_balances[token] = {
-            SYSTEM_ACCOUNT: Decimal("{:.3f}".format(amount))
+            SYSTEM_ACCOUNT: amount
         }
-        cls.liquid_totals[token] = Decimal("{:.3f}".format(amount))
+        cls.liquid_totals[token] = amount
 
         cls.savings_balances[token] = {
-            SYSTEM_ACCOUNT: Decimal("{:.3f}".format(0))
+            SYSTEM_ACCOUNT: Decimal("0.000")
         }
-        cls.savings_totals[token] = Decimal("{:.3f}".format(0))
+        cls.savings_totals[token] = Decimal("0.000")
 
         cls.staked_balances[token] = {
-            SYSTEM_ACCOUNT: Decimal("{:.3f}".format(0))
+            SYSTEM_ACCOUNT: Decimal("0.000")
         }
-        cls.staked_totals[token] = Decimal("{:.3f}".format(0))
+        cls.staked_totals[token] = Decimal("0.000")
 
     @classmethod
     def airdrop_liquid(cls, token, to_acc, amount):

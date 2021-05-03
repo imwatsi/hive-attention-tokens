@@ -1,11 +1,15 @@
 import json
 from hashlib import sha256
 from datetime import datetime
+from decimal import Decimal
 
 BLANK_HASH = "0000000000000000000000000000000000000000000000000000000000000000"
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 NATIVE_TOKEN_ID = "AA0000000000"
 SYSTEM_ACCOUNT = "@@sys"
+MAX_TOKEN_LEN = 12
+MAX_TOKEN_AMOUNT = None
+TOKEN_DECIMAL_PLACES = 3
 
 class Json:
     """Custom JSON object type"""
@@ -17,6 +21,20 @@ class Json:
     def __str__(self):
         return json.dumps(self.json_object)
 
+def _clean_values_dict(data):
+    new = {}
+    for k in data:
+        if isinstance(data[k], Decimal):
+            new[k] = str(data[k])
+    return new
+
+def normalize_json(data):
+    if isinstance(data, dict):
+        for k in data:
+            if isinstance(data[k], dict):
+                data[k] = _clean_values_dict(data[k])
+        data = _clean_values_dict(data)
+    return json.dumps(data)
 
 def parse_transaction_payload(payload):
     elements = []
@@ -31,6 +49,14 @@ def parse_transaction_payload(payload):
         buffer += ch
     elements.append(buffer)
     return elements
+
+def get_counter_account(trans):
+    if trans[0] == 'gen':
+        return SYSTEM_ACCOUNT
+    elif trans[0] == 'air':
+        return trans[1]
+    elif trans[0] == 'trn':
+        return trans[2]
 
 def validate_data_rules(data, rules, description):
     for k in rules:
