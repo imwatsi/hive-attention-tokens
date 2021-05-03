@@ -27,6 +27,7 @@ class BlockSchedule:
         if cls.running:
             print("Blocks schedule already running.")
             return
+        BlockchainState.state_live_sync()
         while True:
             due = cls._check_block_time()
             if due:
