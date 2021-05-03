@@ -25,6 +25,7 @@ async def get_info(context):
 
 async def submit_transaction(context, auth, account, transaction, signature, ref_block_id, ref_block_num):
     # TODO: validate at transaction object init level
+    if not BlockchainState.is_live_syncing(): return "Blockchain not ready"
     new_trans = BaseTransaction(account, signature, auth, transaction)
     # TODO: add transaction to mempool
     TransactionMemPool.add_transaction(new_trans)
