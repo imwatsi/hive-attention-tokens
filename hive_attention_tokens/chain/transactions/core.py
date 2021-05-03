@@ -8,6 +8,7 @@ from hive_attention_tokens.utils.tools import validate_data_rules, parse_transac
 from hive_attention_tokens.chain.transactions.validators.validate import validate_transaction_permissions
 from hive_attention_tokens.chain.transactions.validators.ops.token_genesis import TokenGenesisOp
 from hive_attention_tokens.chain.transactions.validators.ops.airdrop import TokenAirdropOp
+from hive_attention_tokens.chain.transactions.validators.ops.transfer import TokenTransferOp
 from hive_attention_tokens.chain.transactions.effectors.evoke import EvokeTransaction
 
 TRANSACTION_KEYS_IGNORE = []
@@ -79,6 +80,8 @@ class BaseTransaction:
             self.parsed_transaction = TokenGenesisOp(trans).get_parsed_transaction()
         elif trans[0] == 'air':
             self.parsed_transaction = TokenAirdropOp(trans).get_parsed_transaction()
+        elif trans[0] == 'trn':
+            self.parsed_transaction = TokenTransferOp(trans).get_parsed_transaction()
         validate_transaction_permissions(self.account, self.parsed_transaction)
         self.transaction_type = self.parsed_transaction[0]
         self.counter_account = get_counter_account(trans)
