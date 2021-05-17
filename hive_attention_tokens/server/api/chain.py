@@ -10,6 +10,7 @@ from hive_attention_tokens.utils.tools import validate_sha256_hash, NATIVE_TOKEN
 
 
 async def get_info(context):
+    print("Get info")
     info = BlockchainState.get_chain_state() or {}
     liquid_hat = TokenBalances.get_liquid_total(NATIVE_TOKEN_ID)
     savings_hat = TokenBalances.get_savings_total(NATIVE_TOKEN_ID)
@@ -24,6 +25,7 @@ async def get_info(context):
     return normalize_types(info)
 
 async def submit_transaction(context, auth, account, transaction, signature, ref_block_id, ref_block_num):
+    print(f"Submit trans: {auth} {account} {transaction} {signature} {ref_block_id} {ref_block_num}")
     # TODO: validate at transaction object init level
     if not BlockchainState.is_live_syncing(): return "Blockchain not ready"
     new_trans = BaseTransaction(account, signature, auth, transaction)
