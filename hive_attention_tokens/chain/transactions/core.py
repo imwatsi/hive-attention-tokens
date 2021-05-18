@@ -82,6 +82,7 @@ class BaseTransaction:
             self.parsed_transaction = TokenAirdropOp(trans).get_parsed_transaction()
         elif trans[0] == 'trn':
             self.parsed_transaction = TokenTransferOp(trans).get_parsed_transaction()
+        print(trans)
         validate_transaction_permissions(self.account, self.parsed_transaction)
         self.transaction_type = self.parsed_transaction[0]
         self.counter_account = get_counter_account(trans)
