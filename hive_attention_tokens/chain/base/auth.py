@@ -4,7 +4,7 @@ import json
 from hashlib import sha256
 from binascii import hexlify, unhexlify
 
-from ecdsa.util import sigencode_der_canonize
+from ecdsa.util import sigencode_der
 
 from hive_attention_tokens.config import Config
 from hive_attention_tokens.utils.base58 import Base58
@@ -76,7 +76,7 @@ class TransactionAuth:
         message = chain_id + transaction
         digest = sha256(message.encode('ascii')).digest()
         try:
-            valid = pk.verify_digest(sig,digest, sigdecode=sigencode_der_canonize)
+            valid = pk.verify_digest(sig,digest)
             return valid
         except:
             return False

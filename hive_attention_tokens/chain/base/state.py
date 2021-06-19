@@ -19,6 +19,10 @@ class StateMachine:
     @classmethod
     def transfer_action(cls, token_id, from_acc, to_acc, amount):
         return TransferAction(token_id, from_acc, to_acc, amount)
+    
+    @classmethod
+    def vote_action(cls, token_id, original_acc, receiving_acc, permlink):
+        return VoteAction(token_id, original_acc, receiving_acc, permlink)
 
     @classmethod
     def savings_transfer_action(cls):
@@ -71,6 +75,23 @@ class TransferAction:
 
     def process(self):
         TokenBalances.transfer_liquid(self.token, self.from_acc, self.to_acc, self.amount)
+
+class VoteAction:
+
+    def __init__(self, token_id, original_acc, receiving_acc, permlink):
+        self.token = token_id
+        self.original_acc = original_acc
+        self.receiving_acc = receiving_acc
+        self.permlink = permlink
+        self.verify()
+    
+    def verify(self):
+        # TODO: check resource balances
+        TokenBalances.verify_liquid_balance(self.token, SYSTEM_ACCOUNT, self.amount)
+    
+    def process(self):
+        # TODO: check resource balances
+        TokenBalances.airdrop_liquid(self.token, self.to_acc, self.amount)
 
 
 class Tokens:
@@ -193,3 +214,14 @@ class TokenBalances:
             return True
         else:
             raise Exception('Insufficent balance')
+
+class ResourceBalances:
+    
+    liquid_balances = {}
+    liquid_totals = {}
+
+    savings_balances = {}
+    savings_totals = {}
+
+    staked_balances = {}
+    staked_totals = {}

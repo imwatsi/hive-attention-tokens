@@ -15,3 +15,7 @@ class EvokeTransaction:
         elif transaction[0] == 'trn':
             if transaction[3] == NATIVE_TOKEN_ID:
                 NativeTokenV1(parent, orig_acc, block_num, trans_id, transaction).op.process()
+        elif transaction[0] == 'vot':
+            if transaction[3] == NATIVE_TOKEN_ID:
+                NativeTokenV1(parent, orig_acc, block_num, trans_id, transaction).op.process()
+                

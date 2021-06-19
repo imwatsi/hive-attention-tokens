@@ -53,7 +53,7 @@ class BlockSchedule:
                 Blockchain.add_block_to_chain(new_block, config['witness_name'], signature)
                 cls.last_timestamp = _timestamp
             time.sleep(0.1)
-    
+
     @classmethod
     def _check_block_time(cls):
         if cls.last_timestamp is None: return True

@@ -16,6 +16,8 @@ class NativeTokenV1:
             self.op = self.Airdrop(parent, orig_acc, transaction_id, trans[1], trans[3])
         elif trn_name == 'trn':
             self.op = self.Transfer(parent, orig_acc, transaction_id, trans[1], trans[2], trans[4])
+        elif trn_name == 'vot':
+            self.op = self.PostVote(parent, orig_acc, transaction_id, trans[2], trans[3], trans[4])
         else:
             raise Exception (f"Invalid transaction type passed to Native Token effector: {trn_name}")
 
@@ -104,6 +106,33 @@ class NativeTokenV1:
             self.parent.save_transaction_to_db()
             data = {
                 'token_id': NATIVE_TOKEN_ID,
+                'transaction_id': self.transaction_id,
+                'from_acc': SYSTEM_ACCOUNT,
+                'to_acc': self.to_acc,
+                'amount': self.amount
+            }
+            DbTransactions.new_token_transfer(data)
+
+    class PostVote:
+        def __init__(self, parent, orig_acc, transaction_id, receiving_acc, token_id, permlink):
+            self.parent = parent
+            self.orig_acc = orig_acc
+            self.transaction_id = transaction_id
+            self.receiving_acc = receiving_acc
+            self.token_id = token_id
+            self.permlink = permlink
+            self.action = None
+            self.validate()
+
+        def validate(self):
+            self.action = StateMachine.vote_action(self.token_id, self.from_acc, self.to_acc, self.amount)
+
+        def process(self):
+            self.action.process()
+            # all checks passed, save to DB
+            self.parent.save_transaction_to_db()
+            data = {
+                'token_id': self.token_id,
                 'transaction_id': self.transaction_id,
                 'from_acc': SYSTEM_ACCOUNT,
                 'to_acc': self.to_acc,

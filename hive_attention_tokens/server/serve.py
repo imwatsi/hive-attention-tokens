@@ -40,7 +40,32 @@ def run_server(config):
 
     async def handler(request):
         request = await request.text()
-        response = await dispatch(request, methods=all_methods, debug=True, context=app)
+        try:
+            response = await dispatch(request, methods=all_methods, debug=True, context=app)
+        except Exception as e:
+            pass
+
+        """
+            # create and send error response
+            error_response = {
+                "jsonrpc":"2.0",
+                "error" : {
+                    "code": -32602,
+                    "data": "Invalid JSON in request: " + str(ex),
+                    "message": "Invalid parameters"
+                },
+                "id" : -1
+            }
+            headers = {
+                'Access-Control-Allow-Origin': '*'
+            }
+            ret = web.json_response(error_response, status=200, headers=headers, dumps=decimal_serialize)
+            if req_res_log is not None:
+              req_res_log.info("Request: {} processed in {:.4f}s".format(request, perf_counter() - t_start))
+
+            return ret
+        """
+
         if response is not None and response.wanted:
             headers = {
                 'Access-Control-Allow-Origin': '*'
