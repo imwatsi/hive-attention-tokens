@@ -17,7 +17,7 @@ class Peers:
     @classmethod
     def load_own_info(cls):
         """Loads the witness node's own info from the config file and memory."""
-        me = {
+        cls.me = {
             "witness_name": config['witness_name'],
             "up_since": datetime.strftime(cls.boot_time, UTC_TIMESTAMP_FORMAT)
         }
