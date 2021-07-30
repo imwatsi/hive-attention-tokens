@@ -4,9 +4,9 @@ import os
 HOME_DIR = os.environ.get('HAT_HOME') or "/etc/hive-attention-tokens"
 
 CONFIG_FIELDS = [
-    'witness_name', 'signing_key', 'public_signing_key',
-    'ssl_cert', 'ssl_key', 'server_port', 'server_host',
-    'db_username', 'db_password'
+    'witness_name', 'signing_key', 'signing_pub_key',
+    'ssl_cert', 'ssl_key', 'server_host',
+    'db_username', 'db_password', 'seed_nodes'
 ]
 
 
@@ -40,5 +40,6 @@ class Config:
                 else:
                     values[_key] = _value
         cls.config = values
+        cls.config['seed_nodes'] = cls.config['seed_nodes'].split(',')
 
 Config.load_config(HOME_DIR + "/config.ini")
