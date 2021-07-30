@@ -38,7 +38,8 @@ class Peers:
     @classmethod
     def get_current_peers(cls):
         """Returns a list of the current peers the node has in its memory."""
-        return cls.peers
+        res = [p for p in cls.peers]
+        return res
 
     @classmethod
     def get_own_info(cls):
@@ -51,7 +52,7 @@ class Peers:
         cls.peers[host] = {
             'host' : host,
             'last_ping': details['last_ping'],
-            'last_block': details['last_block']
+            'last_block': details['node']['last_block']
         }
     
     @classmethod
