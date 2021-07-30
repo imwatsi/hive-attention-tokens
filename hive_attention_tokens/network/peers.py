@@ -1,7 +1,8 @@
 from datetime import datetime
 from os import truncate
-import requests
 import json
+import requests
+import time
 
 from hive_attention_tokens.config import Config
 from hive_attention_tokens.utils.tools import UTC_TIMESTAMP_FORMAT
@@ -10,7 +11,8 @@ config = Config.config
 
 class Peers:
 
-    peers = []   #  {"host","last_ping","last_block"}
+    peers = {}   #  {"host","last_ping","last_block"}
+    potential_peers = []
     me = {}
     boot_time = datetime.utcnow()
 
@@ -19,7 +21,8 @@ class Peers:
         """Loads the witness node's own info from the config file and memory."""
         cls.me = {
             "witness_name": config['witness_name'],
-            "up_since": datetime.strftime(cls.boot_time, UTC_TIMESTAMP_FORMAT)
+            "up_since": datetime.strftime(cls.boot_time, UTC_TIMESTAMP_FORMAT),
+            "last_block": None # TODO
         }
 
     @classmethod
@@ -29,7 +32,8 @@ class Peers:
         for s in seeds:
             good_node = PeerTalk.ping_node(s)
             if good_node:
-                cls.save_new_peer(good_node)
+                cls.save_new_peer(s, good_node)
+                cls.compare_peer_lists(good_node['peers'])
 
     @classmethod
     def get_current_peers(cls):
@@ -42,9 +46,34 @@ class Peers:
         return cls.me
 
     @classmethod
-    def save_new_peer(cls, details):
+    def save_new_peer(cls, host, details):
         """Adds a new peer to memory."""
-        cls.peers.append(details)
+        cls.peers[host] = {
+            'host' : host,
+            'last_ping': details['last_ping'],
+            'last_block': details['last_block']
+        }
+    
+    @classmethod
+    def compare_peer_lists(cls, new):
+        for p in new:
+            if p not in cls.potential_peers: cls.potential_peers.append(p)
+    
+    @classmethod
+    def peer_list_refresher(cls):
+        while True:
+            for p in cls.peers:
+                good = PeerTalk.ping_node(p)
+                if not good:
+                    cls.peers.remove(p)
+                time.sleep(2)
+            time.sleep(60)
+    
+    @classmethod
+    def is_registered_node(cls, node):
+        # TODO: check for on-chain broadcast
+        return True
+
 
 class PeerTalk:
 
@@ -70,6 +99,9 @@ class PeerTalk:
     @classmethod
     def ping_node(cls, node):
         """Check if a node is online."""
-        x = cls._make_request(node, "net_api.get_current_peers")
-        print(x)
-        return x
+        reply = cls._make_request(node, "net_api.get_node_info")
+        if reply:
+            reply['last_ping'] = datetime.utcnow()
+            if not Peers.is_registered_node(node): return None
+        print(reply)
+        return reply
