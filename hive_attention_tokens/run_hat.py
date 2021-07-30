@@ -5,6 +5,7 @@ from hive_attention_tokens.config import Config
 config = Config.config
 
 def inits():
+    Peers.load_own_info()
     Peers.load_seed_peers()
 
 def run():
