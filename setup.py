@@ -14,10 +14,8 @@ setup(
     install_requires=[
         'requests',
         'psycopg2',
-        'cryptography',
-        'ecdsa',
         'aiohttp',
-        'jsonrpcserver',
+        'jsonrpcserver'
     ],
     entry_points = {
         'console_scripts': [
