@@ -55,6 +55,7 @@ def inits():
     write_db = _write_db()
     read_db = _read_db()
     # Pre-Genesis
+    """
     write_db.add_new_hive_account(
         '@sys',
         'STM00000000000000000000000000000000000000000000000000',
@@ -131,6 +132,7 @@ def inits():
         }
     )
     write_db.db.commit()
+    """
     # Transactions
     WitnessVoteEffect.init(write_db)
     # start Hive sync process
@@ -141,3 +143,7 @@ def run():
     inits()
     run_server(config)
 
+
+
+if __name__ == "__main__":
+    run()
