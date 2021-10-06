@@ -141,7 +141,3 @@ def run():
     inits()
     run_server(config)
 
-
-
-if __name__ == "__main__":
-    run()
