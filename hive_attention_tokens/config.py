@@ -5,7 +5,7 @@ HOME_DIR = os.environ.get('HAT_HOME') or "/etc/hive-attention-tokens"
 
 CONFIG_FIELDS = [
     'witness_name', 'signing_key', 'signing_pub_key',
-    'ssl_cert', 'ssl_key', 'server_host',
+    'ssl_cert', 'ssl_key', 'server_port', 'server_host',
     'db_username', 'db_password', 'seed_nodes'
 ]
 
