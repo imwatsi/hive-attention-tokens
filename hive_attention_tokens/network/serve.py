@@ -1,27 +1,16 @@
+from logging import debug
 import ssl
 from datetime import datetime
 from aiohttp import web
-from jsonrpcserver import method, async_dispatch as dispatch
+from jsonrpcserver import method, async_dispatch
 from jsonrpcserver.methods import Methods
 
 from hive_attention_tokens.network.api import net
 
 
-def build_methods():
-    methods = Methods()
-
-    methods.add(**{'net_api.' + method.__name__: method for method in (
-        net.get_current_peers,
-        net.get_node_info,
-    )})
-
-    return methods
-
-
 def run_server(config):
     app = web.Application()
     #app['db'] = AttentionTokensDb(config)
-    all_methods = build_methods()
 
     async def status_report(request):
         report = {
@@ -31,11 +20,15 @@ def run_server(config):
         return web.json_response(status=200, data=report)
 
     async def handler(request):
-        request = await request.text()
         try:
-            response = await dispatch(request, methods=all_methods, debug=True, context=app)
+            #response = await async_dispatch(request, methods=all_methods, debug=True, context=app)
+            return web.Response(
+                text=await async_dispatch(await request.text()),
+                content_type="application/json",
+                headers = {'Access-Control-Allow-Origin': '*'}
+            )
         except Exception as e:
-            pass
+            print(e)
 
         """
             # create and send error response
@@ -57,14 +50,6 @@ def run_server(config):
             return ret
         """
 
-        if response is not None and response.wanted:
-            headers = {
-                'Access-Control-Allow-Origin': '*'
-            }
-            ret = web.json_response(response.deserialized(), status=200, headers=headers)
-            return ret
-        else:
-            return web.Response()
 
     app.router.add_post("/", handler)
     app.router.add_get("/", status_report)

@@ -7,6 +7,8 @@ import time
 from hive_attention_tokens.config import Config
 from hive_attention_tokens.utils.tools import UTC_TIMESTAMP_FORMAT
 
+MAX_PEER_LEN = 1000
+
 config = Config.config
 
 class Peers:
@@ -57,6 +59,7 @@ class Peers:
     
     @classmethod
     def compare_peer_lists(cls, new):
+        if len(new) > MAX_PEER_LEN: return
         for p in new:
             if p not in cls.potential_peers: cls.potential_peers.append(p)
     
@@ -69,6 +72,18 @@ class Peers:
                     cls.peers.remove(p)
                 time.sleep(2)
             time.sleep(60)
+    
+    @classmethod
+    def peer_list_potentials(cls):
+        while True:
+            for p in cls.potential_peers:
+                good_node = PeerTalk.ping_node(p)
+                if good_node:
+                    cls.save_new_peer(p, good_node)
+                    cls.compare_peer_lists(good_node['peers'])
+                time.sleep(2)
+            time.sleep(60)
+
     
     @classmethod
     def is_registered_node(cls, node):
@@ -88,7 +103,7 @@ class PeerTalk:
             "id": 1
         }
         try:
-            req = requests.post(url, json=data)
+            req = requests.post(url, json=data, timeout=2)
             if req.status_code == 200:
                 resp = json.loads(req.content)
                 return resp['result']

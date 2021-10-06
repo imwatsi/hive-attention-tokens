@@ -12,9 +12,9 @@ Hive Attention Tokens (HAT) is a sidechain and protocol for attention tokens, co
 
 ## Chain
 
-The HAT chain uses the Delegated Proof of Stake algorithm (and other layers still in development) for consensus, with the native HAT token utilized as a governance token.
+The HAT sidechain uses the Delegated Proof of Stake algorithm (and other layers still in development) for consensus, with the native HAT token utilized as a governance token.
 
-- Block time: 1 second
+- Block time: 3 seconds
 - Consensus algorithm: Delegated Proof of Stake
 - Native Token: HAT
 

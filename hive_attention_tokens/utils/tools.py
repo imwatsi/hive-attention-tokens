@@ -11,6 +11,7 @@ MAX_ACC_NAME = 16
 MAX_TOKEN_LEN = 12
 MAX_TOKEN_AMOUNT = None
 TOKEN_DECIMAL_PLACES = 3
+START_BLOCK = 2121780
 
 class Json:
     """Custom JSON object type"""
