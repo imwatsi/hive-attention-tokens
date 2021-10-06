@@ -21,4 +21,4 @@ deploy:
   only:
     - haf-prep
   tags:
-    - testnet
+    - testnet-dev
